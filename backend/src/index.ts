@@ -16,11 +16,11 @@ const SERVER_PORT = env.PORT || 8000;
 
 // express app
 const app = express();
+
+// middleware
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors());
-
-// middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
   console.log(req.path, req.method);
   next();
@@ -29,6 +29,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 // routes
 app.use("/", workoutRoutes);
 
+// error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createHttpError(401, "Endpoint not found"));
 });
@@ -49,6 +50,7 @@ app.use(
     res.status(status).json({ error: msg });
   }
 );
+
 //express listen for requests
 app.listen(SERVER_PORT, () => {
   console.log(`listening to ${SERVER_PORT}`);
