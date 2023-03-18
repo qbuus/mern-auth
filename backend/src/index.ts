@@ -9,6 +9,7 @@ import cors from "cors";
 import morgan from "morgan";
 import createHttpError, { isHttpError } from "http-errors";
 import { env } from "./validate/validation";
+import workoutRoutes from "./routes/workoutRoutes";
 
 // env's
 const SERVER_PORT = env.PORT || 8000;
@@ -26,9 +27,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // routes
-app.get("/", (req: Request, res: Response) => {
-  res.json({ message: "welcome to the app" });
-});
+app.use("/", workoutRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createHttpError(401, "Endpoint not found"));
