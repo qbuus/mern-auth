@@ -10,9 +10,11 @@ import morgan from "morgan";
 import createHttpError, { isHttpError } from "http-errors";
 import { env } from "./validate/validation";
 import workoutRoutes from "./routes/workoutRoutes";
+import mongoose from "mongoose";
 
 // env's
 const SERVER_PORT = env.PORT || 8000;
+const MONGO_CONNECTION = env.MONGO_STRING;
 
 // express app
 const app = express();
@@ -52,6 +54,12 @@ app.use(
 );
 
 //express listen for requests
-app.listen(SERVER_PORT, () => {
-  console.log(`listening to ${SERVER_PORT}`);
-});
+mongoose
+  .connect(MONGO_CONNECTION)
+  .then(() => {
+    console.log("mongoose connected");
+    app.listen(SERVER_PORT, () => {
+      console.log(`listening to ${SERVER_PORT}`);
+    });
+  })
+  .catch(console.error);
