@@ -1,12 +1,18 @@
 import { RequestHandler } from "express";
 import mongoose from "mongoose";
+import createHttpError, { CreateHttpError } from "http-errors";
+import workoutModel from "../models/workout";
 
-export const getWorkouts: RequestHandler = (req, res, next) => {
+export const getWorkouts: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
   res.json({ message: "all workouts" });
   next();
 };
 
-export const getSingleWorkouts: RequestHandler = (
+export const getSingleWorkouts: RequestHandler = async (
   req,
   res,
   next
@@ -14,11 +20,41 @@ export const getSingleWorkouts: RequestHandler = (
   res.json({ mesg: "single workout" });
 };
 
-export const postWorkouts: RequestHandler = (req, res, next) => {
-  res.json({ mesg: "post workout" });
+interface createWorkout {
+  title: string;
+  reps: number;
+  load: number;
+}
+
+export const postWorkouts: RequestHandler<
+  unknown,
+  unknown,
+  createWorkout,
+  unknown
+> = async (req, res, next) => {
+  const { title, reps, load } = req.body;
+
+  try {
+    if (!title || !reps || !load) {
+      createHttpError(
+        400,
+        "Must have all the required informations"
+      );
+    }
+
+    const newWorkout = await workoutModel.create({
+      title: title,
+      reps: reps,
+      load: load,
+    });
+    res.status(201).json(newWorkout);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 };
 
-export const deleteWorkouts: RequestHandler = (
+export const deleteWorkouts: RequestHandler = async (
   req,
   res,
   next
@@ -26,7 +62,7 @@ export const deleteWorkouts: RequestHandler = (
   res.json({ mesg: "delete workout" });
 };
 
-export const updateWorkouts: RequestHandler = (
+export const updateWorkouts: RequestHandler = async (
   req,
   res,
   next
