@@ -88,6 +88,25 @@ export const deleteWorkouts: RequestHandler = async (
   res,
   next
 ) => {
+  const { id } = req.params;
+  try {
+    if (!mongoose.isValidObjectId(id)) {
+      createHttpError(400, "no such workout");
+    }
+
+    const workout = await workoutModel.findOneAndDelete({
+      _id: id,
+    });
+
+    if (!workout) {
+      createHttpError(400, "no workout found");
+    }
+
+    res.status(200).json(workout);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
   res.json({ mesg: "delete workout" });
 };
 
