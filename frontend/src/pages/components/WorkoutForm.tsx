@@ -30,7 +30,6 @@ const WorkoutForm = () => {
       setLoad("");
       setTitle("");
       setError(null);
-      console.log(json);
     }
   };
 
