@@ -8,8 +8,16 @@ export const getWorkouts: RequestHandler = async (
   res,
   next
 ) => {
-  res.json({ message: "all workouts" });
-  next();
+  try {
+    const allWorkouts = await workoutModel
+      .find({})
+      .sort({ createdAt: -1 });
+
+    res.status(201).json(allWorkouts);
+  } catch (error) {
+    console.error(error);
+    next();
+  }
 };
 
 export const getSingleWorkouts: RequestHandler = async (
