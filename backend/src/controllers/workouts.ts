@@ -25,7 +25,24 @@ export const getSingleWorkouts: RequestHandler = async (
   res,
   next
 ) => {
-  res.json({ mesg: "single workout" });
+  const { id } = req.params;
+
+  try {
+    const findWorkoutById = await workoutModel.findById({
+      _id: id,
+    });
+
+    if (!findWorkoutById) {
+      createHttpError(
+        404,
+        "Workout with this id does not exist"
+      );
+    }
+    res.json(findWorkoutById);
+  } catch (error) {
+    console.error(error);
+    next();
+  }
 };
 
 interface createWorkout {
