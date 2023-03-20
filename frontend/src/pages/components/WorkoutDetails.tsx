@@ -9,7 +9,7 @@ const WorkoutDetails = ({ content }: WorkoutType) => {
     <div className="workout-details">
       <h4>{content.title}</h4>
       <p>
-        <strong>Load (%): </strong>
+        <strong>Load kg: </strong>
         {content.load}
       </p>
       <p>
