@@ -94,20 +94,22 @@ export const deleteWorkouts: RequestHandler = async (
       createHttpError(400, "no such workout");
     }
 
-    const workout = await workoutModel.findOneAndDelete({
-      _id: id,
-    });
+    const workout = await workoutModel
+      .findOne({
+        _id: id,
+      })
+      .exec();
 
     if (!workout) {
       createHttpError(400, "no workout found");
     }
 
-    res.status(200).json(workout);
+    await workoutModel.deleteOne({ _id: workout });
+    res.sendStatus(204);
   } catch (error) {
     console.error(error);
     next(error);
   }
-  res.json({ mesg: "delete workout" });
 };
 
 interface workout {
