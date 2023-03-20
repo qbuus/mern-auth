@@ -28,6 +28,10 @@ export const getSingleWorkouts: RequestHandler = async (
   const { id } = req.params;
 
   try {
+    if (!mongoose.isValidObjectId(id)) {
+      createHttpError(400, "no such workout");
+    }
+
     const findWorkoutById = await workoutModel.findById({
       _id: id,
     });
@@ -87,10 +91,41 @@ export const deleteWorkouts: RequestHandler = async (
   res.json({ mesg: "delete workout" });
 };
 
-export const updateWorkouts: RequestHandler = async (
-  req,
-  res,
-  next
-) => {
-  res.json({ mesg: "update workout" });
+interface workout {
+  id: string;
+}
+
+interface update {
+  title: string;
+  reps: number;
+  load: number;
+}
+
+export const updateWorkouts: RequestHandler<
+  workout,
+  unknown,
+  update,
+  unknown
+> = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    if (!mongoose.isValidObjectId(id)) {
+      createHttpError(400, "id not valid");
+    }
+
+    const workout = await workoutModel.findOneAndUpdate(
+      { _id: id },
+      { ...req.body }
+    );
+
+    if (!workout) {
+      createHttpError(400, "no workout found");
+    }
+
+    res.status(200).json(workout);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 };
