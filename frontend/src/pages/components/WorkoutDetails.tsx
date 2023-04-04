@@ -1,4 +1,6 @@
 import { Workout } from "../../models/Workout";
+import { AiFillDelete } from "react-icons/ai";
+import { FormatDate } from "../../DateFormat/DateFormat";
 
 interface WorkoutType {
   content: Workout;
@@ -17,14 +19,14 @@ const WorkoutDetails = ({ content, onDelete }: WorkoutType) => {
         <strong>Reps: </strong>
         {content.reps}
       </p>
-      <p>{content.createdAt.toString()}</p>
+      <p>{FormatDate(content.createdAt)}</p>
       <span
         onClick={(e) => {
           onDelete(content);
           e.stopPropagation();
         }}
       >
-        delete
+        <AiFillDelete size={20} />
       </span>
     </div>
   );
