@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import userModel from "../models/user";
 import bcrypt from "bcrypt";
+import validator from "validator";
 
 interface SignUpBody {
   email: string;
@@ -23,8 +24,17 @@ export const signUp: RequestHandler<
   const passwordRaw = req.body.password;
 
   try {
+    // validation
     if (!email || !passwordRaw) {
       createHttpError(400, "missing some required parameters");
+    }
+
+    if (!validator.isEmail(email)) {
+      throw Error("email is not valid");
+    }
+
+    if (!validator.isStrongPassword(passwordRaw)) {
+      throw Error("Password is not strong enough");
     }
 
     const existingEmail = await userModel
@@ -47,6 +57,7 @@ export const signUp: RequestHandler<
       email: email,
       password: hashedPassword,
     });
+
     res.status(201).json(newUser);
   } catch (error) {
     next(error);
