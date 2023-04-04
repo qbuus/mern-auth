@@ -21,7 +21,6 @@ const Home = () => {
 
         if (!subscribed) {
           setWorkouts(data);
-          console.log(data);
         }
       } catch (error) {
         console.error(error);
@@ -38,12 +37,27 @@ const Home = () => {
     };
   }, []);
 
+  const handleDeleteClick = async (workout: Workout) => {
+    const response = await fetch("api/workouts/" + workout._id, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      setWorkouts(
+        workouts.filter(
+          (workoutFilter) => workoutFilter._id !== workout._id
+        )
+      );
+    }
+  };
+
   return (
     <div className="home">
       <div className="workouts">
         {workouts &&
           workouts.map((workout) => (
             <WorkoutDetails
+              onDelete={handleDeleteClick}
               key={workout._id}
               content={workout}
             />

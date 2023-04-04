@@ -2,9 +2,10 @@ import { Workout } from "../../models/Workout";
 
 interface WorkoutType {
   content: Workout;
+  onDelete: (content: Workout) => void;
 }
 
-const WorkoutDetails = ({ content }: WorkoutType) => {
+const WorkoutDetails = ({ content, onDelete }: WorkoutType) => {
   return (
     <div className="workout-details">
       <h4>{content.title}</h4>
@@ -17,6 +18,14 @@ const WorkoutDetails = ({ content }: WorkoutType) => {
         {content.reps}
       </p>
       <p>{content.createdAt.toString()}</p>
+      <span
+        onClick={(e) => {
+          onDelete(content);
+          e.stopPropagation();
+        }}
+      >
+        delete
+      </span>
     </div>
   );
 };
