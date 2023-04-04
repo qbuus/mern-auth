@@ -11,6 +11,7 @@ import createHttpError, { isHttpError } from "http-errors";
 import { env } from "./validate/validation";
 import workoutRoutes from "./routes/workoutRoutes";
 import mongoose from "mongoose";
+import userRoutes from "./routes/userRoutes";
 
 // env's
 const SERVER_PORT = env.PORT || 8000;
@@ -30,6 +31,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // routes
 app.use("/", workoutRoutes);
+app.use("/api/user", userRoutes);
 
 // error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
