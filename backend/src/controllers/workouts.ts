@@ -63,6 +63,24 @@ export const postWorkouts: RequestHandler<
 > = async (req, res, next) => {
   const { title, reps, load } = req.body;
 
+  let empty = [];
+
+  if (!title) {
+    empty.push("title");
+  }
+  if (!load) {
+    empty.push("load");
+  }
+  if (!reps) {
+    empty.push("reps");
+  }
+  if (empty.length > 0) {
+    return res.status(400).json({
+      error: "Fill in all the required fields",
+      empty,
+    });
+  }
+
   try {
     if (!title || !reps || !load) {
       createHttpError(

@@ -5,6 +5,9 @@ const WorkoutForm = () => {
   const [load, setLoad] = useState<number | string>("");
   const [reps, setReps] = useState<number | string>("");
   const [error, setError] = useState<null | string>(null);
+  const [requiredFields, setRequiredFields] = useState<string[]>(
+    []
+  );
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
@@ -24,12 +27,14 @@ const WorkoutForm = () => {
 
     if (!response.ok) {
       setError(json.error);
+      setRequiredFields(json.empty);
     }
     if (response.ok) {
       setReps("");
       setLoad("");
       setTitle("");
       setError(null);
+      setRequiredFields([]);
     }
   };
 
@@ -44,7 +49,10 @@ const WorkoutForm = () => {
           setTitle(e.target.value)
         }
         value={title}
-        required
+        // required
+        className={
+          requiredFields.includes("title") ? "error" : ""
+        }
       />
 
       <label>Load (kg):</label>
@@ -54,7 +62,10 @@ const WorkoutForm = () => {
           setLoad(e.target.value)
         }
         value={load}
-        required
+        // required
+        className={
+          requiredFields.includes("load") ? "error" : ""
+        }
       />
 
       <label>Reps:</label>
@@ -64,7 +75,10 @@ const WorkoutForm = () => {
           setReps(e.target.value)
         }
         value={reps}
-        required
+        // required
+        className={
+          requiredFields.includes("reps") ? "error" : ""
+        }
       />
 
       <button type="submit">Create a workout</button>
