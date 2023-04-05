@@ -29,7 +29,7 @@ export const getSingleWorkouts: RequestHandler = async (
 
   try {
     if (!mongoose.isValidObjectId(id)) {
-      createHttpError(400, "no such workout");
+      throw createHttpError(400, "no such workout");
     }
 
     const findWorkoutById = await workoutModel.findById({
@@ -37,7 +37,7 @@ export const getSingleWorkouts: RequestHandler = async (
     });
 
     if (!findWorkoutById) {
-      createHttpError(
+      throw createHttpError(
         404,
         "Workout with this id does not exist"
       );
@@ -83,7 +83,7 @@ export const postWorkouts: RequestHandler<
 
   try {
     if (!title || !reps || !load) {
-      createHttpError(
+      throw createHttpError(
         400,
         "Must have all the required informations"
       );
@@ -109,7 +109,7 @@ export const deleteWorkouts: RequestHandler = async (
   const { id } = req.params;
   try {
     if (!mongoose.isValidObjectId(id)) {
-      createHttpError(400, "no such workout");
+      throw createHttpError(400, "no such workout");
     }
 
     const workout = await workoutModel
@@ -119,7 +119,7 @@ export const deleteWorkouts: RequestHandler = async (
       .exec();
 
     if (!workout) {
-      createHttpError(400, "no workout found");
+      throw createHttpError(400, "no workout found");
     }
 
     await workoutModel.deleteOne({ _id: workout });
@@ -150,7 +150,7 @@ export const updateWorkouts: RequestHandler<
 
   try {
     if (!mongoose.isValidObjectId(id)) {
-      createHttpError(400, "id not valid");
+      throw createHttpError(400, "id not valid");
     }
 
     const workout = await workoutModel.findOneAndUpdate(
@@ -159,7 +159,7 @@ export const updateWorkouts: RequestHandler<
     );
 
     if (!workout) {
-      createHttpError(400, "no workout found");
+      throw createHttpError(400, "no workout found");
     }
 
     res.status(200).json(workout);
