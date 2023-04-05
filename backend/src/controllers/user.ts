@@ -1,13 +1,26 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import userModel from "../models/user";
 import bcrypt from "bcrypt";
 import validator from "validator";
+import jwt from "jsonwebtoken";
+import { env } from "../validate/validation";
+import mongoose from "mongoose";
 
-interface SignUpBody {
+interface UserId {
+  _id: mongoose.Types.ObjectId;
+}
+
+const tokenCreate = (_id: UserId) => {
+  return jwt.sign({ _id }, env.SECRET, { expiresIn: "3d" });
+};
+
+type SignUpBody = {
   email: string;
   password: string;
-}
+};
 
 type loginType = {
   email: string;
@@ -29,17 +42,9 @@ export const signUp: RequestHandler<
       createHttpError(400, "missing some required parameters");
     }
 
-    if (!validator.isEmail(email)) {
-      throw Error("email is not valid");
-    }
-
-    if (!validator.isStrongPassword(passwordRaw)) {
-      throw Error("Password is not strong enough");
-    }
-
     const existingEmail = await userModel
       .findOne({
-        email: email,
+        email,
       })
       .exec();
 
@@ -50,15 +55,17 @@ export const signUp: RequestHandler<
       );
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(passwordRaw, salt);
+    const hashedPassword = await bcrypt.hash(passwordRaw, 10);
 
     const newUser = await userModel.create({
       email: email,
       password: hashedPassword,
     });
 
-    res.status(201).json(newUser);
+    // token creation
+    const token = tokenCreate(newUser._id);
+
+    res.status(201).json({ email, token });
   } catch (error) {
     next(error);
   }
@@ -70,5 +77,5 @@ export const login: RequestHandler<
   loginType,
   unknown
 > = async (req, res, next) => {
-  res.json({ msg: "singup" });
+  res.json({ msg: "login" });
 };

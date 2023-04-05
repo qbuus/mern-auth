@@ -14,7 +14,7 @@ import mongoose from "mongoose";
 import userRoutes from "./routes/userRoutes";
 
 // env's
-const SERVER_PORT = env.PORT || 8000;
+const SERVER_PORT = env.PORT || 8010;
 const MONGO_CONNECTION = env.MONGO_STRING;
 
 // express app
@@ -31,7 +31,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // routes
 app.use("/", workoutRoutes);
-app.use("/api/user", userRoutes);
+app.use("/", userRoutes);
 
 // error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
