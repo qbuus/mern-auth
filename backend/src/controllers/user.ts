@@ -3,7 +3,7 @@ dotenv.config();
 import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import userModel from "../models/user";
-import bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt";
 import validator from "validator";
 import jwt from "jsonwebtoken";
 import { env } from "../validate/validation";
@@ -39,7 +39,10 @@ export const signUp: RequestHandler<
   try {
     // validation
     if (!email || !passwordRaw) {
-      createHttpError(400, "missing some required parameters");
+      throw createHttpError(
+        400,
+        "missing some required parameters"
+      );
     }
 
     const existingEmail = await userModel
@@ -76,6 +79,37 @@ export const login: RequestHandler<
   unknown,
   loginType,
   unknown
-> = async (req, res, next) => {
-  res.json({ msg: "login" });
+> = async function (req, res, next) {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  try {
+    if (!email || !password) {
+      throw createHttpError(400, "invalid parameters");
+    }
+
+    const existingUser = await userModel
+      .findOne({ email: email })
+      .select("+password")
+      .exec();
+
+    if (!existingUser) {
+      throw createHttpError(401, "Invalid credentials");
+    }
+
+    const passwordMatch = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
+
+    if (!passwordMatch) {
+      throw createHttpError(401, "bad password");
+    }
+
+    const token = tokenCreate(existingUser._id);
+
+    res.status(201).json({ email, token });
+  } catch (error) {
+    next(error);
+  }
 };
