@@ -31,7 +31,7 @@ const Home = () => {
       }
     };
 
-    if (user !== null) {
+    if (!subscribed) {
       fetchData();
     }
 

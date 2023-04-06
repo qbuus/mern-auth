@@ -4,11 +4,12 @@ import { env } from "../validate/validation";
 import { verify } from "jsonwebtoken";
 import UserModel from "../models/user";
 import { NextFunction, Response, Request } from "express";
-import mongoose from "mongoose";
 
 interface JwtPayload {
-  _id: string | mongoose.Types.ObjectId | any;
+  _id: any;
 }
+
+const Secret = env.SECRET;
 
 export const RequireAuth = async (
   req: Request,
@@ -24,9 +25,8 @@ export const RequireAuth = async (
   }
 
   const token = authorization.split(" ")[1];
-
   try {
-    const { _id } = verify(token, env.SECRET) as JwtPayload;
+    const { _id } = verify(token, Secret) as JwtPayload;
 
     req.user = await UserModel.findOne({ _id }).select("_id");
 

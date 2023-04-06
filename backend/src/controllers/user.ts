@@ -9,7 +9,7 @@ import { env } from "../validate/validation";
 import mongoose from "mongoose";
 
 interface UserId {
-  _id: mongoose.Types.ObjectId;
+  _id: mongoose.Types.ObjectId | any;
 }
 
 const tokenCreate = (_id: UserId) => {
