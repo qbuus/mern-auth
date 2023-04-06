@@ -12,6 +12,7 @@ import { env } from "./validate/validation";
 import workoutRoutes from "./routes/workoutRoutes";
 import mongoose from "mongoose";
 import userRoutes from "./routes/userRoutes";
+import { RequireAuth } from "./middleware/RequireAuth";
 
 // env's
 const SERVER_PORT = env.PORT || 8010;

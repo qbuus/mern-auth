@@ -4,17 +4,14 @@ import { env } from "../validate/validation";
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user";
 import { NextFunction, Response, Request } from "express";
+import mongoose from "mongoose";
 
 interface JwtPayload {
-  _id: string;
+  _id: string | mongoose.Types.ObjectId | any;
 }
 
-interface GetUserAuthInfoRequest extends Request {
-  user: any;
-}
-
-const requireAuth = async (
-  req: GetUserAuthInfoRequest,
+export const RequireAuth = async (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -32,11 +29,10 @@ const requireAuth = async (
     const { _id } = jwt.verify(token, env.SECRET) as JwtPayload;
 
     req.user = await UserModel.findOne({ _id }).select("_id");
+
     next();
   } catch (error) {
     console.log(error);
     res.status(401).json({ error: "Request is not authorized" });
   }
 };
-
-export default requireAuth;
