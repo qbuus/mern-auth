@@ -1,11 +1,18 @@
 import { useState } from "react";
+import Login from "../hooks/Login";
 
-const Login = () => {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const { logging, isLoading, error } = Login();
+
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
+
+    await logging(email, password);
   };
 
   return (
@@ -26,9 +33,11 @@ const Login = () => {
         value={password}
       />
 
-      <button>Login</button>
+      <button disabled={isLoading}>Login</button>
+
+      {error && <div className="error">{error}</div>}
     </form>
   );
 };
 
-export default Login;
+export default LoginPage;
