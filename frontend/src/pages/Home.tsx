@@ -1,11 +1,13 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Workout } from "../models/Workout";
 import WorkoutDetails from "./components/WorkoutDetails";
 import WorkoutForm from "./components/WorkoutForm";
+import { useSelector } from "react-redux";
+import { RootState } from "../context/AuthorizationContext";
 
 const Home = () => {
+  const user = useSelector((state: RootState) => state.user);
   const [workouts, setWorkouts] = useState<Workout[]>([]);
-  const effectRan = useRef<boolean>(false);
 
   const getUrl = () => {
     return "/api/workouts";
@@ -16,7 +18,9 @@ const Home = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(getUrl());
+        const response = await fetch(getUrl(), {
+          headers: { Authorization: `Bearer ${user.token}` },
+        });
         const data = await response.json();
 
         if (!subscribed) {
@@ -27,17 +31,20 @@ const Home = () => {
       }
     };
 
-    if (effectRan.current === false) {
+    if (user !== null) {
       fetchData();
     }
 
     return () => {
       subscribed = true;
-      effectRan.current = true;
     };
-  }, []);
+  }, [user]);
 
   const handleDeleteClick = async (workout: Workout) => {
+    if (user === null) {
+      return;
+    }
+
     const response = await fetch("api/workouts/" + workout._id, {
       method: "DELETE",
     });

@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../context/AuthorizationContext";
 
 const WorkoutForm = () => {
+  const user = useSelector((state: RootState) => state.user);
   const [title, setTitle] = useState<string>("");
   const [load, setLoad] = useState<number | string>("");
   const [reps, setReps] = useState<number | string>("");
@@ -14,6 +17,11 @@ const WorkoutForm = () => {
   ) => {
     e.preventDefault();
 
+    if (user === null) {
+      setError("you must be logged in");
+      return;
+    }
+
     const workout = { title, load, reps };
 
     const response = await fetch("/api/workouts", {
@@ -21,6 +29,7 @@ const WorkoutForm = () => {
       body: JSON.stringify(workout),
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
       },
     });
     const json = await response.json();

@@ -2,7 +2,7 @@ import { configureStore, createSlice } from "@reduxjs/toolkit";
 import { User } from "../models/User";
 
 type UserState = {
-  user: User | null | string;
+  user: string | null | number | any;
 };
 
 const intiialState: UserState = {

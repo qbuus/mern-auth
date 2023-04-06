@@ -4,8 +4,7 @@ import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import userModel from "../models/user";
 import * as bcrypt from "bcrypt";
-import validator from "validator";
-import jwt from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 import { env } from "../validate/validation";
 import mongoose from "mongoose";
 
@@ -14,7 +13,7 @@ interface UserId {
 }
 
 const tokenCreate = (_id: UserId) => {
-  return jwt.sign({ _id }, env.SECRET, { expiresIn: "3d" });
+  return sign({ _id }, env.SECRET, { expiresIn: "3d" });
 };
 
 type SignUpBody = {
@@ -65,10 +64,7 @@ export const signUp: RequestHandler<
       password: hashedPassword,
     });
 
-    // token creation
-    const token = tokenCreate(newUser._id);
-
-    res.status(201).json({ email, token });
+    res.status(201).json(newUser);
   } catch (error) {
     next(error);
   }

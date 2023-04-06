@@ -1,10 +1,7 @@
 import express from "express";
 import * as workoutController from "../controllers/workouts";
-import { RequireAuth } from "../middleware/RequireAuth";
 
 const router = express.Router();
-
-router.use(RequireAuth);
 
 router.get("/api/workouts", workoutController.getWorkouts);
 

@@ -31,8 +31,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // routes
-app.use("/", workoutRoutes);
 app.use("/", userRoutes);
+app.use("/", RequireAuth, workoutRoutes);
 
 // error handler
 app.use((req: Request, res: Response, next: NextFunction) => {

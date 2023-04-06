@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import { env } from "../validate/validation";
-import jwt from "jsonwebtoken";
+import { verify } from "jsonwebtoken";
 import UserModel from "../models/user";
 import { NextFunction, Response, Request } from "express";
 import mongoose from "mongoose";
@@ -26,7 +26,7 @@ export const RequireAuth = async (
   const token = authorization.split(" ")[1];
 
   try {
-    const { _id } = jwt.verify(token, env.SECRET) as JwtPayload;
+    const { _id } = verify(token, env.SECRET) as JwtPayload;
 
     req.user = await UserModel.findOne({ _id }).select("_id");
 
