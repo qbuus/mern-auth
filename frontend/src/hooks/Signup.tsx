@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../context/AuthorizationContext";
-import { User } from "../models/User";
 
 export const SignupHook = () => {
   const [error, setError] = useState<boolean | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean | null>(
-    null
-  );
+  const [isLoading, setIsLoading] = useState<
+    boolean | undefined
+  >(undefined);
   const dispatch = useDispatch();
 
-  const signing = async (email: User, password: User) => {
+  const signing = async (email: string, password: string) => {
     setIsLoading(true);
     setError(false);
 
