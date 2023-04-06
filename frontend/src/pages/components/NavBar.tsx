@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import Logout from "../../hooks/Logout";
+import { useSelector } from "react-redux";
 
 const NavBar = () => {
   const { loggingout } = Logout();
+
+  const userState = useSelector((state: any) => state.user);
 
   const handleClick = () => {
     loggingout();
@@ -15,13 +18,17 @@ const NavBar = () => {
           <h2>Home</h2>
         </Link>
         <nav>
-          <div>
-            <button onClick={handleClick}>Logout</button>
-          </div>
-          <div>
-            <Link to="/login">Login</Link>
-            <Link to="/signup">signup</Link>
-          </div>
+          {userState === null ? (
+            <div>
+              <Link to="/login">Login</Link>
+              <Link to="/signup">signup</Link>
+            </div>
+          ) : (
+            <div>
+              <span>{userState.email}</span>
+              <button onClick={handleClick}>Logout</button>
+            </div>
+          )}
         </nav>
       </div>
     </header>
