@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { loginUser } from "../context/AuthorizationContext";
 import { User } from "../models/User";
 
-export const Signup = () => {
+export const SignupHook = () => {
   const [error, setError] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState<boolean | null>(
     null
@@ -36,4 +36,4 @@ export const Signup = () => {
   return { signing, isLoading, error };
 };
 
-export default Signup;
+export default SignupHook;
