@@ -8,6 +8,10 @@ const userSchema = new Schema({
     select: false,
   },
   password: { type: String, required: true, select: false },
+  user_id: {
+    type: String,
+    required: true,
+  },
 });
 
 type User = InferSchemaType<typeof userSchema>;

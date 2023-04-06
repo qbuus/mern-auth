@@ -7,7 +7,9 @@ import { RootState } from "../context/AuthorizationContext";
 
 const Home = () => {
   const user = useSelector((state: RootState) => state.user);
-  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [workouts, setWorkouts] = useState<Workout[] | null>(
+    null
+  );
 
   const getUrl = () => {
     return "/api/workouts";
@@ -51,7 +53,7 @@ const Home = () => {
 
     if (response.ok) {
       setWorkouts(
-        workouts.filter(
+        workouts!.filter(
           (workoutFilter) => workoutFilter._id !== workout._id
         )
       );

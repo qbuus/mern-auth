@@ -1,12 +1,11 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
-import { User } from "../models/User";
 
 type UserState = {
-  user: string | null | number | any;
+  user: any;
 };
 
 const intiialState: UserState = {
-  user: window?.localStorage?.getItem("user"),
+  user: null,
 };
 
 const appSlice = createSlice({

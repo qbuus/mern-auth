@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import mongoose from "mongoose";
-import createHttpError, { CreateHttpError } from "http-errors";
+import createHttpError from "http-errors";
 import workoutModel from "../models/workout";
 
 export const getWorkouts: RequestHandler = async (
@@ -8,9 +8,11 @@ export const getWorkouts: RequestHandler = async (
   res,
   next
 ) => {
+  const user_id = req.user._id;
+
   try {
     const allWorkouts = await workoutModel
-      .find({})
+      .find({ user_id })
       .sort({ createdAt: -1 });
 
     res.status(201).json(allWorkouts);
@@ -89,10 +91,13 @@ export const postWorkouts: RequestHandler<
       );
     }
 
+    const user_id = req.user._id;
+
     const newWorkout = await workoutModel.create({
       title: title,
       reps: reps,
       load: load,
+      user_id,
     });
     res.status(201).json(newWorkout);
   } catch (error) {

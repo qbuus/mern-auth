@@ -5,10 +5,6 @@ import { verify } from "jsonwebtoken";
 import UserModel from "../models/user";
 import { NextFunction, Response, Request } from "express";
 
-interface JwtPayload {
-  _id: any;
-}
-
 const Secret = env.SECRET;
 
 export const RequireAuth = async (
@@ -26,7 +22,7 @@ export const RequireAuth = async (
 
   const token = authorization.split(" ")[1];
   try {
-    const { _id } = verify(token, Secret) as JwtPayload;
+    const { _id } = verify(token, Secret) as any;
 
     req.user = await UserModel.findOne({ _id }).select("_id");
 
